@@ -12,13 +12,14 @@ import { checkForRequiredVars } from './utils/vars'
 
 require('dotenv').config()
 
-checkForRequiredVars({
-	CORS: false,
-	PORT: true,
-	DB_URL: true
-})
 
-const { CORS, PORT, DB_URL } = process.env
+checkForRequiredVars([
+	'PORT',
+	'DB_URL',
+	'USERS_API'
+])
+
+const { CORS, PORT, DB_URL, USERS_API } = process.env
 
 const app = express()
 if (CORS) app.use(cors())
@@ -30,7 +31,7 @@ app
 	.use(bearerToken())
 	.use(morgan('dev'))
 
-app.get('/users', (req, res) => {
+app.get(USERS_API, (req, res) => {
 	const dbQueryValues = aqp(req.query)
 	const { limit, skip, sort, filter, population } = dbQueryValues
 
@@ -45,14 +46,14 @@ app.get('/users', (req, res) => {
 		})
 })
 
-app.get('/users/:user_id', (req, res) => {
+app.get(`${USERS_API}/:user_id`, (req, res) => {
 	User.findById(req.params.user_id, (error, user) => {
 		if (error) return res.status(500).send({ error })
 		res.send({ user })
 	})
 })
 
-app.post('/users', (req, res) => {
+app.post(USERS_API, (req, res) => {
 	const { code, ...newUserData } = req.body
 
 	User.create({ ...newUserData }, (error, new_user) => {
@@ -67,7 +68,7 @@ app.post('/users', (req, res) => {
 	})
 })
 
-app.patch('/users/:user_id', (req, res) => {
+app.patch(`${USERS_API}/:user_id`, (req, res) => {
 	const { code, ...updatedUserData } = req.body
 	User.findByIdAndUpdate(
 		req.params.user_id,
@@ -86,7 +87,7 @@ app.patch('/users/:user_id', (req, res) => {
 	)
 })
 
-app.delete('/users/:user_id', (req, res) => {
+app.delete(`${USERS_API}/:user_id`, (req, res) => {
 	User.findByIdAndDelete(req.params.user_id, (error, deleted_user) => {
 		if (error) return res.status(500).send({ error })
 
