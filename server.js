@@ -72,6 +72,7 @@ app.patch('/users/:user_id', (req, res) => {
 	User.findByIdAndUpdate(
 		req.params.user_id,
 		{ ...updatedUserData },
+		{ new: true, runValidators: true },
 		(error, updated_user) => {
 			if (error) return res.status(500).send({ error })
 
