@@ -7,19 +7,19 @@ import morgan from 'morgan'
 import aqp from 'api-query-params'
 import cors from 'cors'
 import { User } from './db/models'
-
 import { checkForRequiredVars } from './utils/vars'
+import authentication from './middleware/authentication'
 
 require('dotenv').config()
-
 
 checkForRequiredVars([
 	'PORT',
 	'DB_URL',
-	'USERS_API'
+	'USERS_API',
+	'AUTHENTICATION_API'
 ])
 
-const { CORS, PORT, DB_URL, USERS_API } = process.env
+const { CORS, PORT, DB_URL, USERS_API, AUTHENTICATION_API } = process.env
 
 const app = express()
 if (CORS) app.use(cors())
@@ -29,6 +29,7 @@ app
 	.use(bodyParser.json())
 	.use(cookieParser())
 	.use(bearerToken())
+	.use(authentication('http://server' + AUTHENTICATION_API + '/authorize'))
 	.use(morgan('dev'))
 
 app.get(USERS_API, (req, res) => {
