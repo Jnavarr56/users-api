@@ -16,10 +16,11 @@ checkForRequiredVars([
 	'PORT',
 	'DB_URL',
 	'USERS_API',
-	'AUTHENTICATION_API'
+	'AUTHENTICATION_API',
+	'GATEWAY_BASE_URL'
 ])
 
-const { CORS, PORT, DB_URL, USERS_API, AUTHENTICATION_API } = process.env
+const { GATEWAY_BASE_URL, CORS, PORT, DB_URL, USERS_API, AUTHENTICATION_API } = process.env
 
 const app = express()
 if (CORS) app.use(cors())
@@ -29,7 +30,7 @@ app
 	.use(bodyParser.json())
 	.use(cookieParser())
 	.use(bearerToken())
-	.use(authentication('http://server' + AUTHENTICATION_API + '/authorize'))
+	.use(authentication(GATEWAY_BASE_URL + AUTHENTICATION_API + '/authorize'))
 	.use(morgan('dev'))
 
 app.get(USERS_API, (req, res) => {
