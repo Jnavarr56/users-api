@@ -2,14 +2,6 @@ import { Schema, model } from 'mongoose'
 
 const UserSchema = new Schema(
 	{
-		app_name: {
-			type: String,
-			required: true
-		},
-		display_name: {
-			type: String,
-			required: true
-		},
 		country: {
 			type: String,
 			required: true
@@ -17,6 +9,10 @@ const UserSchema = new Schema(
 		email: {
 			type: String,
 			required: true
+		},
+		email_verified: {
+			type: Boolean,
+			default: false
 		},
 		spotify_id: {
 			type: String,
